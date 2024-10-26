@@ -1,0 +1,86 @@
+create database rollcallstudent_db;
+
+
+CREATE TABLE section (
+id SERIAL PRIMARY KEY,
+section VARCHAR(2) null
+);
+
+
+CREATE TABLE prefix (
+id SERIAL PRIMARY KEY,
+prefix VARCHAR(10));
+
+
+CREATE TABLE curriculum (
+id SERIAL PRIMARY KEY,
+curr_name_th VARCHAR(100),
+curr_name_en VARCHAR(100),
+short_name_th VARCHAR(100),
+short_name_en VARCHAR(100) null
+); 
+
+
+CREATE TABLE student (
+id SERIAL PRIMARY KEY,
+prefix_id int,
+first_name varchar(100), 
+last_name varchar(100),
+date_of_brith date,
+Sex varchar(10),
+Curriculum_id int,
+Previous_school varchar(100),
+Address varchar(200),
+Telephone varchar(10),
+Email varchar(100),
+Line_id varchar(100),
+FOREIGN KEY (prefix_id) REFERENCES prefix(id),
+FOREIGN KEY (curriculum_id) REFERENCES curriculum(id));
+
+
+
+CREATE TABLE student_list (
+id SERIAL PRIMARY KEY,
+section_id int,
+student_id int,
+active_date date,
+Status varchar(100),
+FOREIGN KEY (section_id) REFERENCES section(id),
+FOREIGN KEY (student_id) REFERENCES student(id));
+
+
+insert into section(id,section) VALUES (1,'1'),(2,'2');
+
+insert into prefix(id,prefix) VALUES (1,'นาย'),(2,'นาง'),(3,'นางสาว');
+
+insert into curriculum(id,curr_name_th,curr_name_en,short_name_th,short_name_en) VALUES 
+(1,'วิทยาการคอมพิวเตอร์','Computer Science','วท.บ(วิทยาการคอมพิวเตอร์) ','CS'),
+(2,'เทคโนโลยีสารสนเทศ','Information Technology','วท.บ(เทคโนโลยีสารสนเทศ)','IT');
+
+insert into student(id,prefix_id,first_name,last_name,date_of_birth,curriculum_id,
+previous_school,address,telephone,email,line_id) VALUES
+(1,1,'นวริศ','กวางสิงหนาท','2003-10-6',2,'โรงเรียน1','19/1','0999999999','navarit@gmail.com',
+'@jame1');
+
+ insert into student(id,prefix_id,first_name,last_name,date_of_brith,curriculum_id,
+ previous_school,address,telephone,email,line_id) VALUES
+ (2,'2','ยลดา','พลนน','2002-08-31',2,'โรงเรียน2','19/1','0994150630','yonlada@gmail.com','cream111');
+
+
+insert into student(id,prefix_id,first_name,last_name,date_of_brith,curriculum_id,
+previous_school,address,telephone,email,line_id) VALUES
+(3,'3','นันท์นภัส','ชูสุข','2003-10-17',1,'โรงเรียน3','385/23','0807780787','nannapatbua@gmail.com',
+'bua10803');
+
+insert into student(id,prefix_id,first_name,last_name,date_of_brith,curriculum_id,
+previous_school,address,telephone,email,line_id) VALUES
+(4,'1','กรณ์','อินทร','2003-01-02',1,'โรงเรียน3','22/55','0855555552','kk111@gmail.com',
+'pp5263');
+
+การสร้าง package.json
+npm init -y
+
+วิธีสร้าง node_modulet
+npm i express ejs pg body-parser
+
+
