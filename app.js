@@ -4,14 +4,14 @@ const bodyParser = require('body-parser');
 const { Pool } = require('pg');
 
 const app = express();
-const PORT = 3001;
+const PORT = 3000;
 
 // Database configuration
 const pool = new Pool({
-    user: 'postgres', // เปลี่ยนเป็น username ของคุณ
+    user: 'postgres',
     host: 'localhost',
-    database: 'rollcallstudent_db',
-    password: '0807780787', // เปลี่ยนเป็น password ของคุณ
+    database: 'bua',
+    password: '1',
     port: 5432,
 });
 
@@ -26,7 +26,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // หน้าแรก
 app.get('/', async (req, res) => {
     try {
-        const students = await pool.query('SELECT id, prefix_id,first_name, last_name, date_of_brith,sex, curriculum_id,previous_school,address,telephone, email,line_id FROM student');
+        const students = await pool.query('SELECT id, prefix_id, first_name, last_name, date_of_birth, sex, curriculum_id, previous_school, address, telephone, email, line_id FROM student');
         res.render('index', { students: students.rows });
     } catch (error) {
         console.error(error);
@@ -49,7 +49,6 @@ app.get('/student', async (req, res) => {
     }
 });
 
-
 // เช็คชื่อ
 app.post('/attendance', async (req, res) => {
     const { sectionId, studentId, activeDate, status } = req.body;
@@ -65,67 +64,71 @@ app.post('/attendance', async (req, res) => {
     }
 });
 
-
+// หน้า insert
 app.get('/insert', async (req, res) => {
     try {
-        const result = await pool.query('SELECT * FROM student'); 
-        res.render('insert', { users: result.rows }); // ส่งข้อมูลไปยังไฟล์ EJS
+        const result = await pool.query('SELECT * FROM student');
+        res.render('insert', { users: result.rows });
     } catch (error) {
         console.error('Error executing query', error.stack);
         res.status(500).send('Server Error');
     }
 });
 
-  
-  // เส้นทางสำหรับรับข้อมูลและ insert ลงฐานข้อมูล
-  app.post('/student', async (req, res) => {
-    const { prefix_id, first_name, last_name, date_of_brith, curriculum_id, previous_school, address, telephone, email, line_id } = req.body;
+// เส้นทางสำหรับแสดงฟอร์ม
+app.get('/add-student', (req, res) => {
+    res.render('insert'); // แสดงฟอร์มในหน้า insert.ejs
+});
+
+// เส้นทางสำหรับรับข้อมูลจากฟอร์มและบันทึกลงฐานข้อมูล
+app.post('/add-student', async (req, res) => {
+    const { prefix_id, first_name, last_name, date_of_birth, curriculum_id, previous_school, address, telephone, email, line_id, status } = req.body;
   
     try {
-        await pool.query(`
-            INSERT INTO student 
+        await pool.query(
+            `INSERT INTO student 
+            (prefix_id, first_name, last_name, date_of_birth, curriculum_id, previous_school, address, telephone, email, line_id, status) 
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)`,
+            [prefix_id, first_name, last_name, date_of_birth, curriculum_id, previous_school, address, telephone, email, line_id, status]
+        );
+        res.redirect('/'); // กลับไปที่หน้าแรกหลังบันทึกข้อมูลเสร็จ
+    } catch (error) {
+        console.error('Error inserting student:', error);
+        res.status(500).send('Error inserting student');
+    }
+});
+
+// Insert student
+app.post('/student', async (req, res) => {
+    const { prefix_id, first_name, last_name, date_of_birth, curriculum_id, previous_school, address, telephone, email, line_id } = req.body;
+
+    try {
+        await pool.query(
+            `INSERT INTO student 
             (prefix_id, first_name, last_name, date_of_birth, curriculum_id, previous_school, address, telephone, email, line_id) 
             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`, 
-        [prefix_id, first_name, last_name, date_of_birth, curriculum_id, previous_school, address, telephone, email, line_id]);
-        
-        res.redirect('insert'); // กลับไปที่หน้าฟอร์มหลังจากบันทึกข้อมูลเสร็จสิ้น
+            [prefix_id, first_name, last_name, date_of_birth, curriculum_id, previous_school, address, telephone, email, line_id]
+        );
+        res.redirect('/insert'); // กลับไปที่หน้าฟอร์มหลังจากบันทึกข้อมูลเสร็จสิ้น
     } catch (error) {
+        console.error('Error inserting student:', error);
+        res.status(500).send('Error inserting student');
+    }
+});
 
-  
-    // สร้าง SQL Query สำหรับการ insert ข้อมูล
-    const query = 
-  'INSERT INTO student (id, prefix_id, first_name, last_name, date_of_brith, curriculum_id, previous_school, address, telephone, email, line_id)'
-  VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11);
-
-  //ลบ
-  app.post('/delete-student', async (req, res) => {
+// ลบข้อมูลนักเรียน
+app.post('/delete-student', async (req, res) => {
     const { studentId } = req.body;
     try {
         await pool.query('DELETE FROM student WHERE id = $1', [studentId]);
-        res.redirect('/delete-student'); // Redirect to the student list after deletion
+        res.redirect('/'); // Redirect to the student list after deletion
     } catch (error) {
         console.error(error);
         res.status(500).send('เกิดข้อผิดพลาดในการลบข้อมูลนักเรียน');
     }
 });
 
-  
-    try {
-      // รันคำสั่ง SQL
-      await pool.query(query, [
-        id, prefix_id, first_name, last_name, date_of_brith, curriculum_id,
-        previous_school, address, telephone, email, line_id,
-    ]);
-    
-      res.send('Insert successful');
-    } catch (err) {
-      console.error('Error inserting student:', err);
-      res.status(500).send('Error inserting student');
-    }
-}
-
 // รันเซิร์ฟเวอร์
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
-});
 });
