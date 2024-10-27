@@ -4,54 +4,68 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>รายการเช็คชื่อ</title>
-    
-    <nav class="navbar navbar-light bg-light">
-        <a class="navbar-brand" >
-        
-          <h1>รายการเช็คชื่อ</h1>
-          </nav>
-</head>
-<style>
-
-body {
+    <style>
+        body {
             font-family: Arial, sans-serif;
             background-color: #dbc7e5;
             color: #333;
             margin: 0;
             padding: 0;
         }
-         /* ตาราง */
-         table {
-            width: 70%;
-            justify-content: center;
-            margin-left: 150px;
-            margin: 120px;
-            border-collapse :separate;
-            box-shadow: 0 2px 10px rgba(21, 6, 163, 0.1);
-        }
 
-    /* Navbar */
-    .navbar {
-        background-color: #640df0;
-        justify-content: center;
-    }
-
-    .navbar a {
+        /* Navbar */
+        .navbar {
+            background-color: #640df0;
             color: white;
-            text-decoration: none;
-            padding: 14px 20px;
-            margin: 0 10px;
-            border-radius: 5px;
-            transition: background-color 0.3s;
+            padding: 15px;
+            text-align: center;
         }
 
-        h1 {
-            text-align: center;
+        .navbar h1 {
+            margin: 0;
             color: #f4f2f8;
         }
 
-         /* Footer */
-         footer {
+        /* ตาราง */
+        table {
+            width: 70%;
+            margin: 20px auto;
+            border-collapse: collapse;
+            box-shadow: 0 2px 10px rgba(21, 6, 163, 0.1);
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: center;
+            border: 1px solid #ccc;
+        }
+
+        th {
+            background-color: #ff4830;
+            color: white;
+        }
+
+        /* ปุ่มลิงก์ */
+        .link-button {
+            display: block;
+            width: 200px;
+            margin: 20px auto;
+            padding: 10px 15px;
+            text-align: center;
+            background-color: #f3841c;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        .link-button:hover {
+            background-color: #e6730a;
+            transform: scale(1.05);
+        }
+
+        /* Footer */
+        footer {
             background-color: #640df0;
             color: white;
             text-align: center;
@@ -59,34 +73,15 @@ body {
             position: absolute;
             bottom: 0;
             width: 100%;
-            margin-top: 20px;
-        }
-        .link-button {
-            display: inline-block;
-            text-align: center;
-            background-color: #f3841c; /* สีพื้นหลัง */
-            color: white; /* สีตัวอักษร */
-            text-decoration: none; /* ไม่ให้มีขีดเส้นใต้ */
-            border-radius: 5px; /* มุมโค้ง */
-            transition: background-color 0.3s, transform 0.3s; /* เอฟเฟกต์ */
-}
-
-    button {
-            padding: 10px 15px;
-            margin: 5px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-        th {
-            background-color: #ff4830;
-            color: white;
-            text-align: center;
         }
     </style>
+</head>
 <body>
-    <table border="1">
+    <nav class="navbar">
+        <h1>รายการเช็คชื่อ</h1>
+    </nav>
+
+    <table>
         <thead>
             <tr>
                 <th>ID</th>
@@ -102,15 +97,17 @@ body {
                     <td><%= record.id %></td>
                     <td><%= record.first_name %></td>
                     <td><%= record.last_name %></td>
-                    <td><%= record.active_date.toISOString().split('T')[0] %></td>
+                    <td><%= record.active_date.toDateString() %></td>
                     <td><%= record.status === 'P' ? 'มาเรียน' : 'ขาดเรียน' %></td>
                 </tr>
             <% }) %>
         </tbody>
     </table>
+
     <a href="/" class="link-button">กลับไปหน้าเช็คชื่อ</a>
+
+    <footer>
+        <p>&copy; Nannapat Choosuk</p>
+    </footer>
 </body>
-<footer>
-    <p>&copy; Nannapat Choosuk</p>
-</footer>
 </html>
